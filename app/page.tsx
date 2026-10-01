@@ -1,103 +1,150 @@
 import Image from "next/image";
+import Link from "next/link";
+import { EventCard } from "@/components/event-card";
+import { VideoTabs } from "@/components/video-tabs";
+import { homeCopy } from "@/content/site";
+import { getEvents, getPosts } from "@/lib/cms";
+import { upcomingEvents } from "@/lib/content";
+import { buildMetadata } from "@/lib/seo";
 
-export default function Home() {
+export const metadata = buildMetadata({
+  title: homeCopy.seoTitle,
+  description: homeCopy.seoDescription,
+  path: "/",
+});
+
+export default async function HomePage() {
+  const [events, posts] = await Promise.all([getEvents(), getPosts()]);
+  const upcoming = upcomingEvents(events, 3);
+  const latestPosts = [...posts]
+    .sort(
+      (a, b) =>
+        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
+    )
+    .slice(0, 3);
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
+    <>
+      <section className="relative min-h-[100svh] overflow-hidden bg-[color:var(--bg-deep)] text-white">
         <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
+          src={homeCopy.heroImage}
+          alt={homeCopy.heroImageAlt}
+          fill
           priority
+          className="object-cover"
+          sizes="100vw"
         />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-black/25" />
+        <div className="relative container flex min-h-[100svh] flex-col justify-end pb-16 pt-28 md:justify-center md:pb-24">
+          <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[color:var(--brand)]">
+            {homeCopy.brand}
+          </p>
+          <h1 className="display mt-4 max-w-4xl text-[clamp(2.6rem,8vw,5.6rem)]">
+            {homeCopy.promise}
+          </h1>
+          <p className="mt-5 max-w-xl text-lg text-white/85">{homeCopy.support}</p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link href="/quiero-cotizar" className="btn btn-primary">
+              {homeCopy.primaryCta}
+            </Link>
+            <Link href="/servicios" className="btn btn-ghost">
+              {homeCopy.secondaryCta}
+            </Link>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </section>
+
+      <section className="section">
+        <div className="container">
+          <h2 className="display section-title">{homeCopy.proofsTitle}</h2>
+          <div className="mt-8 grid gap-6 md:grid-cols-3">
+            {homeCopy.proofs.map((proof) => (
+              <article
+                key={proof.title}
+                className="border-t-4 border-[color:var(--brand)] bg-white/70 p-6"
+              >
+                <h3 className="display text-2xl">{proof.title}</h3>
+                <p className="muted mt-3">{proof.body}</p>
+              </article>
+            ))}
+          </div>
+          <p className="mt-10 max-w-3xl text-xl italic text-[color:var(--ink)]">
+            “{homeCopy.socialProof}”
+          </p>
+        </div>
+      </section>
+
+      <section className="section pt-0">
+        <div className="container">
+          <h2 className="display section-title">Nuestros próximos eventos</h2>
+          {upcoming.length === 0 ? (
+            <p className="muted">
+              {homeCopy.emptyEvents}{" "}
+              <Link
+                href="/resultados-eventos-lambdascore"
+                className="font-semibold underline"
+              >
+                Ver resultados
+              </Link>
+            </p>
+          ) : (
+            <div className="mt-6 grid gap-6 md:grid-cols-3">
+              {upcoming.map((event) => (
+                <EventCard key={event.slug} event={event} />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      <section className="bg-[color:var(--bg-deep)] py-20 text-white">
+        <div className="container grid items-center gap-8 md:grid-cols-[1.4fr_1fr]">
+          <div>
+            <h2 className="display text-[clamp(2rem,5vw,3.4rem)]">
+              {homeCopy.terrainTitle}
+            </h2>
+            <p className="mt-4 max-w-xl text-white/75">
+              Antenas ligeras, equipo propio y resultados en vivo aunque la meta
+              esté en el bosque.
+            </p>
+          </div>
+          <div>
+            <Link href="/quiero-cotizar" className="btn btn-primary">
+              Cotiza tu evento
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="container">
+          <h2 className="display section-title">Del terreno al blog</h2>
+          <div className="mt-6 grid gap-6 md:grid-cols-3">
+            {latestPosts.map((post) => (
+              <article key={post.slug} className="bg-white/70 p-5">
+                <p className="text-sm muted">
+                  {new Date(post.publishedAt).toLocaleDateString("es-MX", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </p>
+                <h3 className="mt-2 text-xl font-bold">
+                  <Link href={`/${post.slug}`}>{post.cardTitle}</Link>
+                </h3>
+                <p className="muted mt-2">{post.excerpt}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section pt-0">
+        <div className="container">
+          <h2 className="display section-title">Últimos videos</h2>
+          <VideoTabs />
+        </div>
+      </section>
+    </>
   );
 }

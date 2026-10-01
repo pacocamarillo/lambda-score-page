@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LambdaScore — sitio público
 
-## Getting Started
+Sitio Next.js (App Router) + **Sanity CMS**, desplegado en Vercel. Spec Driven Development en `specs/001-sitio-lambdascore/`.
 
-First, run the development server:
+## Desarrollo
 
 ```bash
+npm install
+cp .env.example .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Sitio: `http://localhost:3000`
+- Studio: `http://localhost:3000/studio` (necesita `NEXT_PUBLIC_SANITY_PROJECT_ID`)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Sin project id de Sanity, `lib/cms.ts` usa la semilla en `content/`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Variables
 
-## Learn More
+- `NEXT_PUBLIC_SANITY_PROJECT_ID` / `NEXT_PUBLIC_SANITY_DATASET`
+- `SANITY_API_READ_TOKEN` (opcional)
+- `RESEND_API_KEY` / `QUOTE_TO_EMAIL`
+- `PAYMENT_INSTRUCTIONS` (opcional, privado)
 
-To learn more about Next.js, take a look at the following resources:
+## Scripts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `npm run dev` — local (Turbopack)
+- `npm run build` — producción (webpack; requerido por Sanity Studio)
+- `npm run start` / `npm run lint`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Schemas Sanity
 
-## Deploy on Vercel
+`post`, `event`, `rentalItem`, `resultSet`, `pageCopy`, `siteSettings` en `sanity/schemaTypes/`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Verificación: `specs/001-sitio-lambdascore/quickstart.md`.
