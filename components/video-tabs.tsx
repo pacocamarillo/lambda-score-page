@@ -1,34 +1,20 @@
 "use client";
 
 import { useState } from "react";
+import type { FeaturedVideo } from "@/lib/youtube";
 
-const videos = [
-  {
-    title: "Zoker 2500 MTB Amozoc",
-    embed:
-      "https://www.youtube.com/embed/videoseries?list=PLplaceholder_zoker",
-  },
-  {
-    title: "Mejor carrera de MTB de Puebla",
-    embed:
-      "https://www.youtube.com/embed/videoseries?list=PLplaceholder_mtb",
-  },
-  {
-    title: "Mayáhuel Trail",
-    embed:
-      "https://www.youtube.com/embed/videoseries?list=PLplaceholder_mayahuel",
-  },
-];
-
-export function VideoTabs() {
+export function VideoTabs({ videos }: { videos: FeaturedVideo[] }) {
   const [active, setActive] = useState(0);
+  const current = videos[active];
+
+  if (!current) return null;
 
   return (
     <div>
       <div role="tablist" aria-label="Últimos videos" className="flex flex-wrap gap-2">
         {videos.map((video, index) => (
           <button
-            key={video.title}
+            key={`${video.title}-${video.embedUrl}`}
             type="button"
             role="tab"
             aria-selected={active === index}
@@ -43,10 +29,16 @@ export function VideoTabs() {
           </button>
         ))}
       </div>
-      <div className="mt-4 aspect-video overflow-hidden bg-[color:var(--bg-deep)]">
+      <div
+        className={`mt-4 overflow-hidden bg-[color:var(--bg-deep)] ${
+          current.short
+            ? "mx-auto aspect-[9/16] max-h-[70vh] w-full max-w-sm"
+            : "aspect-video"
+        }`}
+      >
         <iframe
-          title={videos[active].title}
-          src={videos[active].embed}
+          title={current.title}
+          src={current.embedUrl}
           className="h-full w-full"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen

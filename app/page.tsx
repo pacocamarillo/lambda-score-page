@@ -3,9 +3,11 @@ import Link from "next/link";
 import { EventCard } from "@/components/event-card";
 import { VideoTabs } from "@/components/video-tabs";
 import { homeCopy } from "@/content/site";
-import { getEvents, getPosts } from "@/lib/cms";
+import { getEvents, getPosts, getVideos } from "@/lib/cms";
 import { upcomingEvents } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
+
+export const revalidate = 60;
 
 export const metadata = buildMetadata({
   title: homeCopy.seoTitle,
@@ -14,7 +16,11 @@ export const metadata = buildMetadata({
 });
 
 export default async function HomePage() {
-  const [events, posts] = await Promise.all([getEvents(), getPosts()]);
+  const [events, posts, videos] = await Promise.all([
+    getEvents(),
+    getPosts(),
+    getVideos(),
+  ]);
   const upcoming = upcomingEvents(events, 3);
   const latestPosts = [...posts]
     .sort(
@@ -142,7 +148,7 @@ export default async function HomePage() {
       <section className="section pt-0">
         <div className="container">
           <h2 className="display section-title">Últimos videos</h2>
-          <VideoTabs />
+          <VideoTabs videos={videos} />
         </div>
       </section>
     </>

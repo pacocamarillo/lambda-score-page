@@ -59,6 +59,11 @@ export const resultSetsByYearQuery = groq`*[_type == "resultSet" && year == $yea
 
 export const resultYearsQuery = groq`array::unique(*[_type == "resultSet"].year) | order(@ desc)`;
 
+export const videosQuery = groq`*[_type == "featuredVideo"] | order(order asc) {
+  title,
+  youtubeUrl
+}`;
+
 export const pageCopyQuery = groq`*[_type == "pageCopy" && key == $key][0] {
   key,
   h1,

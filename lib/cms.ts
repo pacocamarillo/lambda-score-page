@@ -1,8 +1,10 @@
 import { events as seedEvents } from "@/content/events";
+import { seedVideos } from "@/content/videos";
 import { posts as seedPosts } from "@/content/posts";
 import { rentalItems as seedRental } from "@/content/rental";
 import { resultYears as seedYears, resultsByYear as seedResults } from "@/content/results";
 import type { Event, Post, RentalItem, ResultSet } from "@/lib/content";
+import { toFeaturedVideo, type FeaturedVideo } from "@/lib/youtube";
 import { isSanityConfigured } from "@/sanity/env";
 import { sanityClient } from "@/sanity/lib/client";
 import {
@@ -10,6 +12,7 @@ import {
   postBySlugQuery,
   postsQuery,
   rentalItemsQuery,
+  videosQuery,
   resultSetsByYearQuery,
   resultYearsQuery,
 } from "@/sanity/lib/queries";
@@ -72,6 +75,24 @@ export async function getPostBySlug(slug: string): Promise<Post | undefined> {
 export async function getPostSlugs(): Promise<string[]> {
   const posts = await getPosts();
   return posts.map((post) => post.slug);
+}
+
+export async function getVideos(): Promise<FeaturedVideo[]> {
+  if (!isSanityConfigured()) return seedVideos;
+  try {
+    const data = await sanityClient.fetch(videosQuery);
+    if (!Array.isArray(data) || data.length === 0) return seedVideos;
+    const mapped = data.flatMap((item) => {
+      const video = toFeaturedVideo(
+        String(item.title || "Video"),
+        String(item.youtubeUrl || ""),
+      );
+      return video ? [video] : [];
+    });
+    return mapped.length > 0 ? mapped : seedVideos;
+  } catch {
+    return seedVideos;
+  }
 }
 
 export async function getEvents(): Promise<Event[]> {
