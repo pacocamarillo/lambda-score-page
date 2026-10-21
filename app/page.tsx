@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { EventCard } from "@/components/event-card";
-import { VideoTabs } from "@/components/video-tabs";
+import { VideoCarousel } from "@/components/video-carousel";
 import { homeCopy } from "@/content/site";
 import { getEvents, getPosts, getVideos } from "@/lib/cms";
 import { upcomingEvents } from "@/lib/content";
@@ -148,7 +148,7 @@ export default async function HomePage() {
       <section className="section pt-0">
         <div className="container">
           <h2 className="display section-title">Últimos videos</h2>
-          <VideoTabs videos={videos} />
+          <VideoCarousel videos={videos} />
         </div>
       </section>
     </>

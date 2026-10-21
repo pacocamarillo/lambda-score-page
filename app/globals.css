@@ -114,6 +114,27 @@ img {
   color: var(--muted);
 }
 
+.carousel-nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: white;
+  color: var(--ink);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.carousel-nav:hover {
+  background: var(--sand);
+  border-color: var(--brand-deep);
+}
+
 .field {
   display: grid;
   gap: 0.35rem;
